@@ -21,26 +21,32 @@ interface DustMote {
  */
 export function SeatFixIntro({
   reducedMotion,
+  onStartEnter,
   onComplete,
 }: {
   reducedMotion: boolean;
+  onStartEnter?: () => void;
   onComplete?: () => void;
 }) {
   const [phase, setPhase] = useState<'playing' | 'entering' | 'done'>('playing');
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const triggeredRef = useRef(false);
 
   const triggerEnter = useCallback(() => {
-    setPhase((prev) => (prev === 'playing' ? 'entering' : prev));
-  }, []);
+    if (triggeredRef.current) return;
+    triggeredRef.current = true;
+    setPhase('entering');
+    onStartEnter?.();
+  }, [onStartEnter]);
 
   useEffect(() => {
     const enterDelayMs = reducedMotion ? 450 : 2650;
     const enterTimer = window.setTimeout(() => {
-      setPhase((prev) => (prev === 'playing' ? 'entering' : prev));
+      triggerEnter();
     }, enterDelayMs);
 
     return () => window.clearTimeout(enterTimer);
-  }, [reducedMotion]);
+  }, [reducedMotion, triggerEnter]);
 
   useEffect(() => {
     if (phase !== 'entering') return;

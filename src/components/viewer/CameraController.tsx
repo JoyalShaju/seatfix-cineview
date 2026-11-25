@@ -10,6 +10,10 @@ import { findSeatById, useCineViewStore } from '@/store/useCineViewStore';
 const OVERVIEW_POSITION = new THREE.Vector3(0, 7.2, 18.0);
 const OVERVIEW_TARGET = new THREE.Vector3(0, 2.4, 5.2);
 
+// Elevated upper-left rear auditorium corner for the dramatic entrance swoop
+const ENTRY_CORNER_POSITION = new THREE.Vector3(-5.6, 7.0, 17.4);
+const ENTRY_LOOK_TARGET = new THREE.Vector3(0.4, 3.2, 3.8);
+
 export function CameraController() {
   const { gl } = useThree();
   const {
@@ -22,6 +26,7 @@ export function CameraController() {
     headPitchOffsetRad,
     reducedMotion,
     cameraResetNonce,
+    introPhase,
     setHeadLookOffsets,
   } = useCineViewStore();
 
@@ -33,12 +38,33 @@ export function CameraController() {
   const draggingRef = useRef(false);
   const lastPointerRef = useRef({ x: 0, y: 0 });
 
+  // Entrance fly-in state (glides from upper corner down into the selected seat)
+  const flyRef = useRef({
+    started: false,
+    finished: false,
+    progress: 0,
+  });
+  const entryQuatRef = useRef(new THREE.Quaternion());
+  const flyPosRef = useRef(new THREE.Vector3());
+  const flyQuatRef = useRef(new THREE.Quaternion());
+  const lastSeatIdRef = useRef(activePreviewSeatId);
+
   // Flag overview camera reset when entering 3d-overview or resetting view
   useEffect(() => {
     if (visualizationMode === '3d-overview') {
       needsOverviewResetRef.current = true;
     }
   }, [visualizationMode, cameraResetNonce]);
+
+  // Precompute entry corner look orientation once
+  useEffect(() => {
+    const m = new THREE.Matrix4().lookAt(
+      ENTRY_CORNER_POSITION,
+      ENTRY_LOOK_TARGET,
+      new THREE.Vector3(0, 1, 0),
+    );
+    entryQuatRef.current.setFromRotationMatrix(m);
+  }, []);
 
   // Mouse and touch drag-look in first-person seat mode
   useEffect(() => {
@@ -49,6 +75,10 @@ export function CameraController() {
       if (e.button !== 0 && e.pointerType === 'mouse') return;
       draggingRef.current = true;
       lastPointerRef.current = { x: e.clientX, y: e.clientY };
+      // Yield fly-in immediately if the user grabs the camera
+      if (flyRef.current.started && !flyRef.current.finished) {
+        flyRef.current.finished = true;
+      }
     };
 
     const onPointerMove = (e: PointerEvent) => {
@@ -95,6 +125,7 @@ export function CameraController() {
     }
 
     if (visualizationMode === '3d-overview') {
+      flyRef.current.finished = true;
       if (needsOverviewResetRef.current) {
         activeCamera.position.copy(OVERVIEW_POSITION);
         activeCamera.lookAt(OVERVIEW_TARGET);
@@ -104,6 +135,12 @@ export function CameraController() {
     }
 
     if (visualizationMode !== 'first-person') return;
+
+    // Cancel initial fly-in if user clicked a different seat mid-flight
+    if (lastSeatIdRef.current !== activePreviewSeatId) {
+      lastSeatIdRef.current = activePreviewSeatId;
+      flyRef.current.finished = true;
+    }
 
     const seat = findSeatById(layout, activePreviewSeatId);
     const cat = layout.categories[seat.categoryId];
@@ -127,6 +164,45 @@ export function CameraController() {
       'YXZ',
     );
     targetQuatRef.current.setFromEuler(eulerRef.current);
+
+    // Park at upper auditorium corner while the SeatFix intro plays
+    if (!reducedMotion && introPhase === 'playing' && !flyRef.current.finished) {
+      activeCamera.position.copy(ENTRY_CORNER_POSITION);
+      activeCamera.quaternion.copy(entryQuatRef.current);
+      hasInitializedRef.current = true;
+      return;
+    }
+
+    // Swoop down from the top corner into the seat once the intro begins opening
+    if (!reducedMotion && !flyRef.current.finished) {
+      if (!flyRef.current.started) {
+        flyRef.current.started = true;
+        flyRef.current.progress = 0;
+      }
+
+      const flyDurationSec = 2.05;
+      flyRef.current.progress = Math.min(
+        1,
+        flyRef.current.progress + Math.min(delta, 0.05) / flyDurationSec,
+      );
+      const t = flyRef.current.progress;
+      // Smooth quintic ease-in-out
+      const ease = t * t * t * (t * (t * 6 - 15) + 10);
+
+      flyPosRef.current.lerpVectors(ENTRY_CORNER_POSITION, targetPosRef.current, ease);
+      // Gentle arched glide over the seating rows
+      flyPosRef.current.y += Math.sin(t * Math.PI) * 0.65;
+      flyQuatRef.current.slerpQuaternions(entryQuatRef.current, targetQuatRef.current, ease);
+
+      activeCamera.position.copy(flyPosRef.current);
+      activeCamera.quaternion.copy(flyQuatRef.current);
+
+      if (t >= 1) {
+        flyRef.current.finished = true;
+      }
+      hasInitializedRef.current = true;
+      return;
+    }
 
     if (!hasInitializedRef.current || reducedMotion) {
       activeCamera.position.copy(targetPosRef.current);

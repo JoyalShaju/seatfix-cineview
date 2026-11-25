@@ -11,7 +11,7 @@ import { useCineViewStore } from '@/store/useCineViewStore';
 const PRESETS: Array<{ id: RecommendationPreset; label: string }> = [
   { id: 'best-overall', label: 'Best Overall' },
   { id: 'most-centered', label: 'Centered' },
-  { id: 'recliner', label: 'LUXE Recliner' },
+  { id: 'recliner', label: 'LUXE Sofa' },
   { id: 'near-aisle', label: 'Near Aisle' },
   { id: 'closest', label: 'Closest' },
   { id: 'farthest', label: 'Farthest' },

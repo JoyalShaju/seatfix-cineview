@@ -24,7 +24,9 @@ export interface CineViewState {
   screenDisplayMode: ScreenDisplayMode;
   graphicsQuality: GraphicsQuality;
   reducedMotion: boolean;
+  houseLightsOn: boolean;
   cameraResetNonce: number;
+  introPhase: 'playing' | 'entering' | 'done';
 
   setActivePreviewSeat: (seatId: string) => void;
   setActivePreviewSeatByCode: (code: string) => void;
@@ -43,6 +45,9 @@ export interface CineViewState {
   setScreenDisplayMode: (mode: ScreenDisplayMode) => void;
   setGraphicsQuality: (quality: GraphicsQuality) => void;
   setReducedMotion: (reduced: boolean) => void;
+  setHouseLightsOn: (on: boolean) => void;
+  toggleHouseLights: () => void;
+  setIntroPhase: (phase: 'playing' | 'entering' | 'done') => void;
 }
 
 const DEFAULT_SEAT_ID =
@@ -73,7 +78,9 @@ export const useCineViewStore = create<CineViewState>((set, get) => ({
   screenDisplayMode: 'cinema-loop',
   graphicsQuality: 'medium',
   reducedMotion: false,
+  houseLightsOn: true,
   cameraResetNonce: 0,
+  introPhase: 'playing',
 
   setActivePreviewSeat: (seatId) =>
     set((state) => ({
@@ -164,4 +171,10 @@ export const useCineViewStore = create<CineViewState>((set, get) => ({
   setGraphicsQuality: (quality) => set({ graphicsQuality: quality }),
 
   setReducedMotion: (reduced) => set({ reducedMotion: reduced }),
+
+  setHouseLightsOn: (houseLightsOn) => set({ houseLightsOn }),
+
+  toggleHouseLights: () => set((state) => ({ houseLightsOn: !state.houseLightsOn })),
+
+  setIntroPhase: (introPhase) => set({ introPhase }),
 }));

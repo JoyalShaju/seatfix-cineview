@@ -204,12 +204,12 @@ export function ScreenSurface({
         />
       </mesh>
 
-      {/* Warm golden-amber screen spill illuminating front rows */}
+      {/* Soft neutral screen bounce light */}
       {graphicsQuality !== 'low' && (
         <pointLight
           position={[0, 0, 2.4]}
-          color="#f6df9c"
-          intensity={graphicsQuality === 'high' ? 8.5 : 5.5}
+          color="#e2e8f0"
+          intensity={graphicsQuality === 'high' ? 6.5 : 4.2}
           distance={20}
           decay={1.6}
         />

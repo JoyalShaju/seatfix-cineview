@@ -8,9 +8,11 @@ import { WallPxlLogo } from './WallPxlLogo';
 export function ProceduralAuditoriumShell({
   layout,
   graphicsQuality,
+  houseLightsOn,
 }: {
   layout: AuditoriumLayoutConfig;
   graphicsQuality: GraphicsQuality;
+  houseLightsOn: boolean;
 }) {
   const { widthMeters: W, lengthMeters: L, frontHeightMeters: H } = layout.dimensions;
 
@@ -25,33 +27,35 @@ export function ProceduralAuditoriumShell({
 
   return (
     <group>
-      {/* Auditorium Pre-Show Luxury House Lighting (2800K warm architectural illumination) */}
-      <ambientLight intensity={1.15} color="#f5efe4" />
-      <hemisphereLight args={['#ffebc2', '#2f2922', 1.15]} />
+      {/* Pre-Show House Lighting vs. Cinema Dark Mode (neutral architectural light so ash seats stay true ash) */}
+      <ambientLight intensity={houseLightsOn ? 1.05 : 0.16} color="#f3f5f8" />
+      <hemisphereLight
+        args={['#eef2f7', '#262930', houseLightsOn ? 1.05 : 0.16]}
+      />
       <directionalLight
         position={[3.5, H - 0.5, L * 0.32]}
-        intensity={1.2}
-        color="#fff0d4"
-        castShadow={graphicsQuality === 'high'}
+        intensity={houseLightsOn ? 1.15 : 0.08}
+        color="#f8fafc"
+        castShadow={graphicsQuality === 'high' && houseLightsOn}
       />
       <directionalLight
         position={[-4.5, H - 0.9, L * 0.72]}
-        intensity={0.75}
-        color="#e8dcc8"
+        intensity={houseLightsOn ? 0.65 : 0.05}
+        color="#e2e8f0"
       />
-      {graphicsQuality !== 'low' && (
+      {graphicsQuality !== 'low' && houseLightsOn && (
         <>
           <pointLight
             position={[0, H - 1.1, 6.8]}
-            color="#ffe5b4"
-            intensity={14}
+            color="#f1f5f9"
+            intensity={10}
             distance={22}
             decay={1.4}
           />
           <pointLight
             position={[0, H - 1.1, 13.5]}
-            color="#ffe5b4"
-            intensity={14}
+            color="#f1f5f9"
+            intensity={10}
             distance={22}
             decay={1.4}
           />
@@ -198,7 +202,7 @@ export function ProceduralAuditoriumShell({
           <meshStandardMaterial
             color="#f0d790"
             emissive="#c99c3c"
-            emissiveIntensity={0.95}
+            emissiveIntensity={houseLightsOn ? 0.95 : 0.15}
           />
         </mesh>
       ))}
@@ -224,7 +228,7 @@ export function ProceduralAuditoriumShell({
             <meshStandardMaterial
               color="#f3df9e"
               emissive="#c99c3c"
-              emissiveIntensity={1.0}
+              emissiveIntensity={houseLightsOn ? 1.0 : 0.12}
             />
           </mesh>
           <mesh position={[W / 2 - 0.24, 3.1, zPos]}>
@@ -232,7 +236,7 @@ export function ProceduralAuditoriumShell({
             <meshStandardMaterial
               color="#f3df9e"
               emissive="#c99c3c"
-              emissiveIntensity={1.0}
+              emissiveIntensity={houseLightsOn ? 1.0 : 0.12}
             />
           </mesh>
         </React.Fragment>
@@ -292,7 +296,7 @@ export function ProceduralAuditoriumShell({
             <meshStandardMaterial
               color="#e8cf86"
               emissive="#b69142"
-              emissiveIntensity={0.55}
+              emissiveIntensity={houseLightsOn ? 0.55 : 0.08}
             />
           </mesh>
         </group>

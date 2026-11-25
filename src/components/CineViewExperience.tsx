@@ -9,9 +9,11 @@ import {
   Crosshair,
   Eye,
   Grid2x2,
+  Lightbulb,
   Map as MapIcon,
   Maximize2,
   Minimize2,
+  Moon,
   RotateCcw,
   Sliders,
   Ticket,
@@ -38,10 +40,10 @@ const AuditoriumCanvas = dynamic(
 );
 
 const DEMO_VANTAGE_SEATS = [
-  { code: 'A6', label: 'A6 Front' },
-  { code: 'E5', label: 'E5 Mid' },
+  { code: 'A6', label: 'A6 Classic' },
+  { code: 'E5', label: 'E5 Prime' },
   { code: 'H7', label: 'H7 Prime' },
-  { code: 'J6', label: 'J6 Recliner' },
+  { code: 'J6', label: 'J6 LUXE Sofa' },
   { code: 'B1', label: 'B1 Corner' },
 ];
 
@@ -59,6 +61,7 @@ export function CineViewExperience() {
     headYawOffsetRad,
     screenDisplayMode,
     reducedMotion,
+    houseLightsOn,
     setActivePreviewSeatByCode,
     setVisualizationMode,
     setLookAtScreenCenter,
@@ -66,6 +69,8 @@ export function CineViewExperience() {
     resetCameraView,
     setScreenDisplayMode,
     setReducedMotion,
+    toggleHouseLights,
+    setIntroPhase,
     clearSelectedSeats,
   } = useCineViewStore();
 
@@ -147,7 +152,11 @@ export function CineViewExperience() {
     <div className="relative flex min-h-screen flex-col text-[#f5f3ee]">
       <SeatFixIntro
         reducedMotion={reducedMotion}
-        onComplete={() => setIntroFinished(true)}
+        onStartEnter={() => setIntroPhase('entering')}
+        onComplete={() => {
+          setIntroPhase('done');
+          setIntroFinished(true);
+        }}
       />
 
       {/* Sleek Luxury Top Bar */}
@@ -327,6 +336,23 @@ export function CineViewExperience() {
               >
                 <Crosshair className="h-3.5 w-3.5" />
                 <span>{lookAtScreenCenter ? 'Centered Aim' : 'Natural Forward'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={toggleHouseLights}
+                className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  !houseLightsOn
+                    ? 'bg-[#d4af37]/20 text-[#f3e1a9] ring-1 ring-[#d4af37]/50'
+                    : 'bg-white/[0.05] text-stone-300 hover:bg-white/10'
+                }`}
+              >
+                {houseLightsOn ? (
+                  <Moon className="h-3.5 w-3.5 text-[#e8cf86]" />
+                ) : (
+                  <Lightbulb className="h-3.5 w-3.5 text-[#e8cf86]" />
+                )}
+                <span>{houseLightsOn ? 'Lights Off' : 'Lights On'}</span>
               </button>
 
               <button

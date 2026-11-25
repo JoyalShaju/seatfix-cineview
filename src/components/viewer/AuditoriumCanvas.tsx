@@ -24,7 +24,8 @@ function detectWebGLSupport(): boolean {
 }
 
 export function AuditoriumCanvas() {
-  const { layout, graphicsQuality, screenDisplayMode, reducedMotion } = useCineViewStore();
+  const { layout, graphicsQuality, screenDisplayMode, reducedMotion, houseLightsOn } =
+    useCineViewStore();
   const [webglSupported] = useState<boolean>(() => detectWebGLSupport());
 
   if (!webglSupported) {
@@ -64,10 +65,14 @@ export function AuditoriumCanvas() {
       }}
       className="h-full w-full touch-none select-none"
     >
-      <color attach="background" args={['#08080c']} />
-      <fog attach="fog" args={['#08080c', 26, 56]} />
+      <color attach="background" args={[houseLightsOn ? '#08080c' : '#020204']} />
+      <fog attach="fog" args={[houseLightsOn ? '#08080c' : '#020204', 26, 56]} />
 
-      <ProceduralAuditoriumShell layout={layout} graphicsQuality={graphicsQuality} />
+      <ProceduralAuditoriumShell
+        layout={layout}
+        graphicsQuality={graphicsQuality}
+        houseLightsOn={houseLightsOn}
+      />
       <ScreenSurface
         screen={layout.screen}
         displayMode={screenDisplayMode}

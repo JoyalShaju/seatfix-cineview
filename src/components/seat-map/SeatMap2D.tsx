@@ -27,24 +27,24 @@ function SeatButton({
   const isBooked = seat.initialAvailability === 'booked';
 
   let baseStyle =
-    'bg-gradient-to-b from-[#1e1e24] to-[#131318] border-white/15 text-stone-200 hover:border-[#e8cf86] hover:from-[#292622] hover:to-[#181613]';
+    'bg-gradient-to-b from-[#2f323a] to-[#1d1f24] border-white/15 text-stone-200 hover:border-[#e8cf86] hover:from-[#3d414b] hover:to-[#272930]';
 
   if (isBooked) {
     baseStyle = 'bg-[#0b0b0e] border-white/[0.04] text-stone-600 cursor-not-allowed';
   } else if (isHeld) {
-    baseStyle = 'bg-[#251c29] border-purple-300/25 text-purple-200';
+    baseStyle = 'bg-[#2a2620] border-[#d4af37]/25 text-stone-300';
   } else if (isSelected) {
     baseStyle =
       'bg-gradient-to-b from-emerald-500/25 to-emerald-900/30 border-emerald-400 text-emerald-100 font-semibold shadow-[0_0_12px_rgba(16,185,129,0.22)]';
   } else if (seat.categoryId === 'recliner') {
     baseStyle =
-      'bg-gradient-to-b from-[#422c1d] to-[#261810] border-[#d4af37]/45 text-[#f3e1a9] hover:border-[#e8cf86]';
+      'bg-gradient-to-b from-[#54514b] to-[#34322e] border-[#d4af37]/45 text-[#f5efe0] hover:border-[#e8cf86]';
   } else if (seat.categoryId === 'premium') {
     baseStyle =
-      'bg-gradient-to-b from-[#4d1722] to-[#290b12] border-[#b45368]/45 text-rose-100 hover:border-[#e8cf86]';
+      'bg-gradient-to-b from-[#3d4048] to-[#26282e] border-white/25 text-stone-100 hover:border-[#e8cf86]';
   } else if (seat.categoryId === 'accessible') {
     baseStyle =
-      'bg-gradient-to-b from-[#1a3c3d] to-[#0f2425] border-teal-400/40 text-teal-100 hover:border-[#e8cf86]';
+      'bg-gradient-to-b from-[#2c3d3e] to-[#1b2728] border-teal-400/40 text-teal-100 hover:border-[#e8cf86]';
   }
 
   const previewRing = isPreviewing
@@ -222,12 +222,12 @@ export function SeatMap2D({ compact = false }: { compact?: boolean }) {
           Selected
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="inline-block h-3 w-3 rounded border border-[#b45368]/50 bg-[#4d1722]" />
-          PXL Prime
+          <span className="inline-block h-3 w-3 rounded border border-white/25 bg-[#3d4048]" />
+          Prime PXL
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Armchair className="h-3.5 w-3.5 text-[#e8cf86]" />
-          LUXE Recliner
+          LUXE Sofa
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Accessibility className="h-3.5 w-3.5 text-teal-300" />

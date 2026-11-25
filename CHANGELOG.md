@@ -2,6 +2,31 @@
 
 All notable milestones, architectural updates, and verified changes to CineView 3D are recorded here.
 
+## [0.2.18] — 2026-11-25 — True Cool-Neutral Ash Lighting & Velvet Sheen
+### Fixed
+- Replaced yellow/cream auditorium light colors and cream `sheenColor` in [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), [ScreenSurface.tsx](src/components/viewer/ScreenSurface.tsx), [seatTextures.ts](src/components/viewer/seatTextures.ts), and [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx) with neutral architectural white lights (`#f3f5f8` / `#f8fafc`) and cool-silver sheen (`#cbd5e1`) so ash-grey seats render as true ash grey without a cream cast.
+
+## [0.2.17] — 2026-11-25 — Ash-Grey Luxury Seat Palette
+### Changed
+- Updated seat upholstery colors in [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx), [grand-lumina.ts](src/lib/auditorium/grand-lumina.ts), and [SeatMap2D.tsx](src/components/seat-map/SeatMap2D.tsx) to a cohesive ash-tone luxury palette (`#5c6068` Classic Club ash, `#464952` Prime PXL smoked ash, `#757169` Row J LUXE Sofa stone-ash leather, `#2c2e34` charcoal-ash bolsters).
+
+## [0.2.16] — 2026-11-25 — Tailored Velvet & Stitched Leather Seat Sculpture
+### Changed
+- Created [seatTextures.ts](src/components/viewer/seatTextures.ts) generating paired albedo-detail, bump, and high-roughness maps with woven micro-texture, diamond-tufted stitching, and recessed seam shading so upholstery never looks like glossy plastic.
+- Rebuilt [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx) using `MeshPhysicalMaterial` (`sheen`, `roughness: 0.88`, `metalness: 0`) with waterfall-curved seat pans, contoured lumbar backrests, dark leather side bolsters, sculpted armrests with brushed-brass cupholder torus rings, and brass rear shoulder trim.
+
+## [0.2.15] — 2026-11-25 — Front-to-Back Luxury Seating Progression & Lights Off Mode
+### Added
+- Added a **Lights Off / Lights On** (`houseLightsOn`) cinema-dark mode toggle in [CineViewExperience.tsx](src/components/CineViewExperience.tsx), [CameraControlsPanel.tsx](src/components/hud/CameraControlsPanel.tsx), [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), and [AuditoriumCanvas.tsx](src/components/viewer/AuditoriumCanvas.tsx) so users can dim house downlights and wall sconces while preserving aisle step strips, EXIT signs, projector glow, and screen luminance.
+- Added upholstered **LUXE Sofa** plinths, privacy side bolsters, and extended ottoman legrests to Row J in [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx).
+
+### Changed
+- Refined seat tier progression from front to back in [grand-lumina.ts](src/lib/auditorium/grand-lumina.ts) and [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx): **Classic Club** (Rows A–D, graphite slate), **Prime PXL Lounge** (Rows E–I, deep burgundy velvet), and **LUXE Sofa** (Row J, warm cognac leather).
+
+## [0.2.14] — 2026-11-25 — Cinematic Top-Corner Fly-In Entrance
+### Added
+- Added a `2.05s` quintic-eased aerial fly-in camera swoop in [CameraController.tsx](src/components/viewer/CameraController.tsx) synced with [SeatFixIntro.tsx](src/components/intro/SeatFixIntro.tsx) via `introPhase` in [useCineViewStore.ts](src/store/useCineViewStore.ts), gliding from the upper-left auditorium corner down into the seated eye pose (automatically bypassed when `reducedMotion` is enabled or interrupted by user interaction).
+
 ## [0.2.13] — 2026-11-25 — Brighter Pre-Show Auditorium House Lighting
 ### Changed
 - Added warm overhead house downlights (`ambientLight`, `hemisphereLight`, dual `directionalLight`, and ceiling cove `pointLight`s) in [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), softened distance fog in [AuditoriumCanvas.tsx](src/components/viewer/AuditoriumCanvas.tsx), and lifted seat/riser upholstery shades in [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx) so every seat, armrest, cupholder, and row step is clearly visible in 3D.

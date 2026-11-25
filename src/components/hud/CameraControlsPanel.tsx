@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Crosshair, Grid2x2, RotateCcw, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { Crosshair, Grid2x2, Lightbulb, Moon, RotateCcw, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { useCineViewStore } from '@/store/useCineViewStore';
 import type { GraphicsQuality } from '@/types/auditorium';
 
@@ -12,12 +12,14 @@ export function CameraControlsPanel() {
     screenDisplayMode,
     graphicsQuality,
     reducedMotion,
+    houseLightsOn,
     setLookAtScreenCenter,
     setEyeHeightMeters,
     resetCameraView,
     setScreenDisplayMode,
     setGraphicsQuality,
     setReducedMotion,
+    toggleHouseLights,
   } = useCineViewStore();
 
   return (
@@ -83,6 +85,23 @@ export function CameraControlsPanel() {
       </label>
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] pt-3">
+        <button
+          type="button"
+          onClick={toggleHouseLights}
+          className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition ${
+            !houseLightsOn
+              ? 'border-[#d4af37]/55 bg-[#d4af37]/15 text-[#f3e1a9]'
+              : 'border-white/10 bg-white/[0.04] text-stone-200 hover:bg-white/[0.09]'
+          }`}
+        >
+          {houseLightsOn ? (
+            <Moon className="h-3.5 w-3.5 text-[#e8cf86]" />
+          ) : (
+            <Lightbulb className="h-3.5 w-3.5 text-[#e8cf86]" />
+          )}
+          {houseLightsOn ? 'Cinema Dark' : 'Lights On'}
+        </button>
+
         <button
           type="button"
           onClick={() =>

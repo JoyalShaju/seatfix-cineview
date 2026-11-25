@@ -82,7 +82,7 @@ export function recommendSeats(
           } else {
             score = metrics.suitabilityEstimateScore + 15;
           }
-          reason = `VIP Recliner • ${metrics.distanceToScreenCenterMeters.toFixed(1)}m elevated view`;
+          reason = `LUXE Sofa • ${metrics.distanceToScreenCenterMeters.toFixed(1)}m elevated view`;
           break;
         }
       }

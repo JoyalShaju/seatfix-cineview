@@ -21,7 +21,7 @@ const CATEGORIES: Record<SeatCategoryId, SeatCategoryConfig> = {
     cushionHeightMeters: 0.44,
     eyeHeightOffsetMeters: 0,
     eyeBackOffsetMeters: 0.06,
-    colorHex: '#272932',
+    colorHex: '#5c6068',
   },
   premium: {
     id: 'premium',
@@ -34,20 +34,20 @@ const CATEGORIES: Record<SeatCategoryId, SeatCategoryConfig> = {
     cushionHeightMeters: 0.45,
     eyeHeightOffsetMeters: 0.01,
     eyeBackOffsetMeters: 0.07,
-    colorHex: '#5c1824',
+    colorHex: '#464952',
   },
   recliner: {
     id: 'recliner',
-    label: 'LUXE Recliner',
+    label: 'LUXE Sofa',
     priceMinor: 2500,
     currency: 'USD',
-    widthMeters: 0.65,
-    depthMeters: 0.84,
-    backHeightMeters: 1.12,
+    widthMeters: 0.66,
+    depthMeters: 0.88,
+    backHeightMeters: 1.14,
     cushionHeightMeters: 0.46,
     eyeHeightOffsetMeters: -0.04,
     eyeBackOffsetMeters: 0.14,
-    colorHex: '#4f3524',
+    colorHex: '#757169',
   },
   accessible: {
     id: 'accessible',
@@ -60,7 +60,7 @@ const CATEGORIES: Record<SeatCategoryId, SeatCategoryConfig> = {
     cushionHeightMeters: 0.44,
     eyeHeightOffsetMeters: -0.06,
     eyeBackOffsetMeters: 0.05,
-    colorHex: '#1f494a',
+    colorHex: '#445c5d',
   },
 };
 
@@ -85,7 +85,7 @@ const ROW_BLUEPRINTS: RowBlueprint[] = [
   { label: 'F', zMeters: 9.95, floorYMeters: 1.44, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
   { label: 'G', zMeters: 11.1, floorYMeters: 1.76, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
   { label: 'H', zMeters: 12.25, floorYMeters: 2.08, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
-  { label: 'I', zMeters: 13.45, floorYMeters: 2.4, riserDepthMeters: 1.25, pitchMeters: 1.2, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'standard' },
+  { label: 'I', zMeters: 13.45, floorYMeters: 2.4, riserDepthMeters: 1.25, pitchMeters: 1.2, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
   { label: 'J', zMeters: 14.8, floorYMeters: 2.74, riserDepthMeters: 1.45, pitchMeters: 1.35, leftCount: 3, centerCount: 6, rightCount: 3, defaultCategory: 'recliner' },
 ];
 
