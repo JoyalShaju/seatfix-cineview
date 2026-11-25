@@ -5,15 +5,15 @@ import { ThreeEvent } from '@react-three/fiber';
 import * as THREE from 'three';
 import { findSeatById, useCineViewStore } from '@/store/useCineViewStore';
 
-const COLOR_PREVIEW = new THREE.Color('#e8cf86');
+const COLOR_PREVIEW = new THREE.Color('#f0d78c');
 const COLOR_SELECTED = new THREE.Color('#10b981');
-const COLOR_HOVERED = new THREE.Color('#f5e6ba');
-const COLOR_BOOKED = new THREE.Color('#101014');
-const COLOR_HELD = new THREE.Color('#3b2d42');
-const COLOR_STANDARD = new THREE.Color('#23242b');
-const COLOR_PREMIUM = new THREE.Color('#521622');
-const COLOR_RECLINER = new THREE.Color('#4a3121');
-const COLOR_ACCESSIBLE = new THREE.Color('#1c4445');
+const COLOR_HOVERED = new THREE.Color('#faecc4');
+const COLOR_BOOKED = new THREE.Color('#1e1f26');
+const COLOR_HELD = new THREE.Color('#533f61');
+const COLOR_STANDARD = new THREE.Color('#3a3d4a');
+const COLOR_PREMIUM = new THREE.Color('#782132');
+const COLOR_RECLINER = new THREE.Color('#6e4830');
+const COLOR_ACCESSIBLE = new THREE.Color('#255c5e');
 
 /**
  * Generates a subtle stitched quilted leatherette bump map on an offscreen canvas
@@ -160,18 +160,18 @@ export function InstancedSeats() {
       bumpScale: 0.005,
     });
     const armLeather = new THREE.MeshStandardMaterial({
-      color: '#121114',
-      roughness: 0.48,
+      color: '#222127',
+      roughness: 0.45,
       metalness: 0.14,
     });
     const brushedMetal = new THREE.MeshStandardMaterial({
-      color: '#bfa15a',
-      roughness: 0.28,
+      color: '#d4b468',
+      roughness: 0.26,
       metalness: 0.85,
     });
     const pedestalDark = new THREE.MeshStandardMaterial({
-      color: '#111114',
-      roughness: 0.5,
+      color: '#1b1c22',
+      roughness: 0.46,
       metalness: 0.65,
     });
     const audience = new THREE.MeshStandardMaterial({

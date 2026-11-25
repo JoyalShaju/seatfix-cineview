@@ -64,8 +64,8 @@ export function AuditoriumCanvas() {
       }}
       className="h-full w-full touch-none select-none"
     >
-      <color attach="background" args={['#040406']} />
-      <fog attach="fog" args={['#040406', 18, 38]} />
+      <color attach="background" args={['#08080c']} />
+      <fog attach="fog" args={['#08080c', 26, 56]} />
 
       <ProceduralAuditoriumShell layout={layout} graphicsQuality={graphicsQuality} />
       <ScreenSurface

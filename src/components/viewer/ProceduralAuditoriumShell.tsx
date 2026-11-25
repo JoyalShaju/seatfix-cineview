@@ -25,20 +25,43 @@ export function ProceduralAuditoriumShell({
 
   return (
     <group>
-      {/* Auditorium Luxury 2700K Mood Lighting */}
-      <ambientLight intensity={0.44} color="#e7e2d8" />
-      <hemisphereLight args={['#a88e5a', '#070709', 0.48]} />
+      {/* Auditorium Pre-Show Luxury House Lighting (2800K warm architectural illumination) */}
+      <ambientLight intensity={1.15} color="#f5efe4" />
+      <hemisphereLight args={['#ffebc2', '#2f2922', 1.15]} />
       <directionalLight
-        position={[0, H - 0.6, L * 0.45]}
-        intensity={0.46}
-        color="#f5dfb3"
+        position={[3.5, H - 0.5, L * 0.32]}
+        intensity={1.2}
+        color="#fff0d4"
         castShadow={graphicsQuality === 'high'}
       />
+      <directionalLight
+        position={[-4.5, H - 0.9, L * 0.72]}
+        intensity={0.75}
+        color="#e8dcc8"
+      />
+      {graphicsQuality !== 'low' && (
+        <>
+          <pointLight
+            position={[0, H - 1.1, 6.8]}
+            color="#ffe5b4"
+            intensity={14}
+            distance={22}
+            decay={1.4}
+          />
+          <pointLight
+            position={[0, H - 1.1, 13.5]}
+            color="#ffe5b4"
+            intensity={14}
+            distance={22}
+            decay={1.4}
+          />
+        </>
+      )}
 
       {/* Front Pit Floor & Stage Skirt */}
       <mesh position={[0, -0.05, L / 2]} receiveShadow={graphicsQuality === 'high'}>
         <boxGeometry args={[W, 0.1, L]} />
-        <meshStandardMaterial color="#0b0b0e" roughness={0.92} metalness={0.05} />
+        <meshStandardMaterial color="#16161c" roughness={0.88} metalness={0.05} />
       </mesh>
 
       {/* PXL-style Architectural Screen Wing Coves & Stage Subwoofer Plinth */}
@@ -74,7 +97,7 @@ export function ProceduralAuditoriumShell({
               receiveShadow={graphicsQuality === 'high'}
             >
               <boxGeometry args={[W - 0.1, blockHeight, row.riserDepthMeters]} />
-              <meshStandardMaterial color="#111015" roughness={0.9} metalness={0.05} />
+              <meshStandardMaterial color="#1b1b23" roughness={0.86} metalness={0.06} />
             </mesh>
 
             {layout.aisles.map((aisle) => (

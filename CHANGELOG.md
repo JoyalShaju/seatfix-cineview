@@ -2,6 +2,10 @@
 
 All notable milestones, architectural updates, and verified changes to CineView 3D are recorded here.
 
+## [0.2.13] — 2026-11-25 — Brighter Pre-Show Auditorium House Lighting
+### Changed
+- Added warm overhead house downlights (`ambientLight`, `hemisphereLight`, dual `directionalLight`, and ceiling cove `pointLight`s) in [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), softened distance fog in [AuditoriumCanvas.tsx](src/components/viewer/AuditoriumCanvas.tsx), and lifted seat/riser upholstery shades in [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx) so every seat, armrest, cupholder, and row step is clearly visible in 3D.
+
 ## [0.2.12] — 2026-11-25 — Illuminated P[XL] Side Wall Logos
 ### Added
 - Created [WallPxlLogo.tsx](src/components/viewer/WallPxlLogo.tsx) and mounted it on both the left and right auditorium walls in [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), featuring extruded `P` and `[ ]` brackets in matching warm champagne gold (`#f3df9e` / `#c99c3c`) and `XL` in crisp illuminated white (`#ffffff`).
