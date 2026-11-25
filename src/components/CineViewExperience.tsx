@@ -168,7 +168,7 @@ export function CineViewExperience() {
               </div>
               <p className="truncate text-xs text-stone-400">
                 {layout.cinemaName} • {layout.auditoriumName} •{' '}
-                <span className="text-stone-200">Solaris Horizon</span>
+                <span className="text-stone-200">ODIN FORCE (4K)</span>
               </p>
             </div>
           </div>

@@ -81,13 +81,17 @@ export function CameraController() {
     };
   }, [gl, visualizationMode, setHeadLookOffsets]);
 
-  useFrame(({ camera: activeCamera }, delta) => {
-    if (
-      activeCamera instanceof THREE.PerspectiveCamera &&
-      activeCamera.fov !== layout.cameraVerticalFovDeg
-    ) {
-      activeCamera.fov = layout.cameraVerticalFovDeg;
-      activeCamera.updateProjectionMatrix();
+  useFrame(({ camera: activeCamera, size }, delta) => {
+    if (activeCamera instanceof THREE.PerspectiveCamera) {
+      const aspect = size.width / Math.max(1, size.height);
+      const minHfovRad = (88 * Math.PI) / 180;
+      const neededVfovDeg =
+        (2 * Math.atan(Math.tan(minHfovRad / 2) / Math.max(0.65, aspect)) * 180) / Math.PI;
+      const targetVfov = Math.min(86, Math.max(layout.cameraVerticalFovDeg, neededVfovDeg));
+      if (Math.abs(activeCamera.fov - targetVfov) > 0.05) {
+        activeCamera.fov = targetVfov;
+        activeCamera.updateProjectionMatrix();
+      }
     }
 
     if (visualizationMode === '3d-overview') {

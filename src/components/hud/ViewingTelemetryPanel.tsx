@@ -103,7 +103,7 @@ export function ViewingTelemetryPanel() {
             {metrics.verticalScreenCoverageDeg.toFixed(0)}°
           </div>
           <div className="mt-0.5 text-[11px] text-stone-500">
-            Camera lens fixed at {layout.cameraVerticalFovDeg}° vFOV
+            Camera lens min 88° H / {layout.cameraVerticalFovDeg}° V base
           </div>
         </div>
 

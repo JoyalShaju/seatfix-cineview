@@ -2,6 +2,27 @@
 
 All notable milestones, architectural updates, and verified changes to CineView 3D are recorded here.
 
+## [0.2.12] — 2026-11-25 — Illuminated P[XL] Side Wall Logos
+### Added
+- Created [WallPxlLogo.tsx](src/components/viewer/WallPxlLogo.tsx) and mounted it on both the left and right auditorium walls in [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), featuring extruded `P` and `[ ]` brackets in matching warm champagne gold (`#f3df9e` / `#c99c3c`) and `XL` in crisp illuminated white (`#ffffff`).
+
+## [0.2.11] — 2026-11-25 — ODIN FORCE 4K Screen Feature & End-to-End Framing
+### Added
+- Copied `ODIN_FORCE_4K (1).png` to [public/movies/odin-force-4k.png](public/movies/odin-force-4k.png) and updated [ScreenSurface.tsx](src/components/viewer/ScreenSurface.tsx) to render it edge-to-edge on a `2048×858` high-anisotropy CinemaScope `CanvasTexture`.
+
+### Changed
+- Widened base vertical FOV to `62°` in [grand-lumina.ts](src/lib/auditorium/grand-lumina.ts) and enforced a minimum `88°` horizontal FOV in [CameraController.tsx](src/components/viewer/CameraController.tsx) on narrower desktop/mobile viewports so the full end-to-end screen frame is clearly visible from standard seats while remaining consistent across seat comparisons.
+- Updated movie title indicator in [CineViewExperience.tsx](src/components/CineViewExperience.tsx) to **ODIN FORCE (4K)**.
+
+## [0.2.10] — 2026-11-25 — Premium 4K Cinema Projector & Clean Screen View
+### Changed
+- Removed the translucent volumetric throw-cone mesh in [ProjectionBooth.tsx](src/components/viewer/ProjectionBooth.tsx) so the cinema screen remains 100% crisp and unobstructed from every seat.
+- Upgraded the rear projector to a flagship dual-laser design featuring a precision gimbal pedestal, side heat-sink cooling fins, brushed-brass zoom/focus rings, multi-coated optical lens elements, and illuminated booth aperture trim.
+
+## [0.2.9] — 2026-11-25 — 3D Rear Cinema Laser Projector & Throw Beam
+### Added
+- Created [ProjectionBooth.tsx](src/components/viewer/ProjectionBooth.tsx) and integrated it into [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), adding a recessed rear projection booth port, 3D 4K laser cinema projector chassis, stepped anamorphic lens barrel, illuminated objective lamp, and subtle additive projection beam aimed toward the screen center.
+
 ## [0.2.8] — 2026-11-25 — Public Netlify Deployment Configuration & Release
 ### Added
 - Added [netlify.toml](netlify.toml) configured for Next.js 16 (`command = "npm run build"`, `publish = ".next"`, `[[plugins]] package = "@netlify/plugin-nextjs"`).

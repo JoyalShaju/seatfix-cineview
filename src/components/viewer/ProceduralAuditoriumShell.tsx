@@ -2,6 +2,8 @@
 
 import React, { useMemo } from 'react';
 import type { AuditoriumLayoutConfig, GraphicsQuality } from '@/types/auditorium';
+import { ProjectionBooth } from './ProjectionBooth';
+import { WallPxlLogo } from './WallPxlLogo';
 
 export function ProceduralAuditoriumShell({
   layout,
@@ -144,17 +146,11 @@ export function ProceduralAuditoriumShell({
         <meshStandardMaterial color="#09090c" roughness={0.92} />
       </mesh>
 
-      {/* Rear Laser Projection Suite Window + Rear Surround Speakers */}
-      <mesh position={[0, Math.min(H - 1.35, rearWalkwayY + 2.4), L - 0.01]}>
-        <planeGeometry args={[2.6, 0.85]} />
-        <meshStandardMaterial
-          color="#1f1c18"
-          emissive="#d4af37"
-          emissiveIntensity={0.22}
-          roughness={0.2}
-          metalness={0.85}
-        />
-      </mesh>
+      {/* Rear Laser Projection Booth + 3D Projector + Rear Surround Speakers */}
+      <ProjectionBooth
+        layout={layout}
+        boothY={Math.min(H - 1.35, rearWalkwayY + 2.35)}
+      />
       {[-3.6, 3.6].map((sx) => (
         <mesh key={`rear-spk-${sx}`} position={[sx, rearWalkwayY + 2.3, L - 0.12]}>
           <boxGeometry args={[0.38, 0.56, 0.24]} />
@@ -183,6 +179,10 @@ export function ProceduralAuditoriumShell({
           />
         </mesh>
       ))}
+
+      {/* Illuminated P[XL] Architectural Wall Logos on Left and Right Walls */}
+      <WallPxlLogo position={[-W / 2 + 0.06, 4.35, 7.7]} rotationY={Math.PI / 2} />
+      <WallPxlLogo position={[W / 2 - 0.06, 4.35, 7.7]} rotationY={-Math.PI / 2} />
 
       {/* Ribbed Acoustic Wall Panels & Warm Sconces */}
       {sideRibZs.map((zPos) => (

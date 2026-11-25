@@ -245,7 +245,7 @@ export function buildGrandLuminaScreen1(): AuditoriumLayoutConfig {
     seats,
     obstacles,
     defaultEyeHeightMeters: 1.15,
-    cameraVerticalFovDeg: 55,
+    cameraVerticalFovDeg: 62,
   };
 
   return validateAuditoriumLayout(layout);
