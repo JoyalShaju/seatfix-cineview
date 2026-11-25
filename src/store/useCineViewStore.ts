@@ -78,7 +78,7 @@ export const useCineViewStore = create<CineViewState>((set, get) => ({
   screenDisplayMode: 'cinema-loop',
   graphicsQuality: 'medium',
   reducedMotion: false,
-  houseLightsOn: true,
+  houseLightsOn: false,
   cameraResetNonce: 0,
   introPhase: 'playing',
 

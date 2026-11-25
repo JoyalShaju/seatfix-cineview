@@ -39,13 +39,7 @@ const AuditoriumCanvas = dynamic(
   },
 );
 
-const DEMO_VANTAGE_SEATS = [
-  { code: 'A6', label: 'A6 Classic' },
-  { code: 'E5', label: 'E5 Prime' },
-  { code: 'H7', label: 'H7 Prime' },
-  { code: 'J6', label: 'J6 LUXE Sofa' },
-  { code: 'B1', label: 'B1 Corner' },
-];
+const LIGHTS_HINT_STORAGE_KEY = 'seatfix_hide_lights_hint';
 
 type InspectorTab = 'seats' | 'specs' | 'compare';
 
@@ -58,14 +52,11 @@ export function CineViewExperience() {
     comparisonSeatIds,
     visualizationMode,
     lookAtScreenCenter,
-    headYawOffsetRad,
     screenDisplayMode,
     reducedMotion,
     houseLightsOn,
-    setActivePreviewSeatByCode,
     setVisualizationMode,
     setLookAtScreenCenter,
-    setHeadLookOffsets,
     resetCameraView,
     setScreenDisplayMode,
     setReducedMotion,
@@ -79,6 +70,8 @@ export function CineViewExperience() {
   const [activeTab, setActiveTab] = useState<InspectorTab>('seats');
   const [introFinished, setIntroFinished] = useState(false);
   const [mount3DScene, setMount3DScene] = useState(false);
+  const [showLightsHint, setShowLightsHint] = useState(false);
+  const [dontShowAgainChecked, setDontShowAgainChecked] = useState(false);
 
   // Defer WebGL shader & geometry initialization briefly so the intro animation runs jitter-free
   useEffect(() => {
@@ -107,6 +100,25 @@ export function CineViewExperience() {
       await stageRef.current.requestFullscreen?.();
     } else {
       await document.exitFullscreen?.();
+    }
+  };
+
+  const handleLightsButtonClick = () => {
+    toggleHouseLights();
+    if (showLightsHint) {
+      setShowLightsHint(false);
+    }
+  };
+
+  const handleDontShowAgainChange = (checked: boolean) => {
+    setDontShowAgainChecked(checked);
+    if (typeof window !== 'undefined') {
+      if (checked) {
+        window.localStorage.setItem(LIGHTS_HINT_STORAGE_KEY, '1');
+        setShowLightsHint(false);
+      } else {
+        window.localStorage.removeItem(LIGHTS_HINT_STORAGE_KEY);
+      }
     }
   };
 
@@ -146,7 +158,7 @@ export function CineViewExperience() {
     },
   ];
 
-  const isLookingBehind = Math.abs(Math.abs(headYawOffsetRad) - Math.PI) < 0.35;
+  const isLightsFocusActive = showLightsHint && !houseLightsOn;
 
   return (
     <div className="relative flex min-h-screen flex-col text-[#f5f3ee]">
@@ -156,6 +168,12 @@ export function CineViewExperience() {
         onComplete={() => {
           setIntroPhase('done');
           setIntroFinished(true);
+          if (
+            typeof window !== 'undefined' &&
+            window.localStorage.getItem(LIGHTS_HINT_STORAGE_KEY) !== '1'
+          ) {
+            setShowLightsHint(true);
+          }
         }}
       />
 
@@ -279,56 +297,13 @@ export function CineViewExperience() {
             )}
           </div>
 
-          {/* Sleek Quick Jump & View Controls Strip */}
-          <div className="no-scrollbar flex items-center justify-between gap-2 overflow-x-auto rounded-xl border border-white/10 bg-[#0d0d11] px-3 py-2">
-            <div className="flex shrink-0 items-center gap-1.5">
-              <span className="mr-1 hidden text-[11px] font-medium text-stone-500 sm:inline">
-                Quick Jump:
-              </span>
-              {DEMO_VANTAGE_SEATS.map((preset) => (
-                <button
-                  key={preset.code}
-                  type="button"
-                  onClick={() => setActivePreviewSeatByCode(preset.code)}
-                  className={`shrink-0 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-                    activeSeat.code === preset.code
-                      ? 'bg-gradient-to-r from-[#e8cf86] to-[#c9a349] font-semibold text-[#050507]'
-                      : 'bg-white/[0.05] text-stone-300 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  {preset.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex shrink-0 items-center gap-1.5 border-l border-white/10 pl-2.5">
-              <button
-                type="button"
-                onClick={() => {
-                  if (visualizationMode !== 'first-person') {
-                    setVisualizationMode('first-person');
-                  }
-                  if (isLookingBehind) {
-                    setHeadLookOffsets(0, 0);
-                  } else {
-                    setLookAtScreenCenter(false);
-                    setHeadLookOffsets(Math.PI, 0.06);
-                  }
-                }}
-                className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-                  isLookingBehind
-                    ? 'bg-[#d4af37]/20 text-[#f3e1a9] ring-1 ring-[#d4af37]/50'
-                    : 'bg-white/[0.05] text-stone-300 hover:bg-white/10'
-                }`}
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                <span>{isLookingBehind ? 'Look Front' : 'Look Behind'}</span>
-              </button>
-
+          {/* Clean View & Lighting Controls Bar */}
+          <div className="relative flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/10 bg-[#0d0d11] px-3 py-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => setLookAtScreenCenter(!lookAtScreenCenter)}
-                className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                   lookAtScreenCenter
                     ? 'bg-[#d4af37]/20 text-[#f3e1a9] ring-1 ring-[#d4af37]/50'
                     : 'bg-white/[0.05] text-stone-300 hover:bg-white/10'
@@ -340,32 +315,72 @@ export function CineViewExperience() {
 
               <button
                 type="button"
-                onClick={toggleHouseLights}
-                className={`inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition ${
-                  !houseLightsOn
-                    ? 'bg-[#d4af37]/20 text-[#f3e1a9] ring-1 ring-[#d4af37]/50'
-                    : 'bg-white/[0.05] text-stone-300 hover:bg-white/10'
-                }`}
-              >
-                {houseLightsOn ? (
-                  <Moon className="h-3.5 w-3.5 text-[#e8cf86]" />
-                ) : (
-                  <Lightbulb className="h-3.5 w-3.5 text-[#e8cf86]" />
-                )}
-                <span>{houseLightsOn ? 'Lights Off' : 'Lights On'}</span>
-              </button>
-
-              <button
-                type="button"
                 onClick={() =>
                   setScreenDisplayMode(
                     screenDisplayMode === 'cinema-loop' ? 'calibration-grid' : 'cinema-loop',
                   )
                 }
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-white/[0.05] px-2.5 py-1 text-xs font-medium text-stone-300 transition hover:bg-white/10"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-white/[0.05] px-3 py-1.5 text-xs font-medium text-stone-300 transition hover:bg-white/10"
               >
                 <Grid2x2 className="h-3.5 w-3.5 text-[#e8cf86]" />
                 <span>{screenDisplayMode === 'cinema-loop' ? 'Aspect Grid' : 'Film'}</span>
+              </button>
+            </div>
+
+            {/* Highlighted Lights On / Lights Off Button + Persistent Informational Focus Callout */}
+            <div className="relative">
+              {isLightsFocusActive && (
+                <div
+                  role="status"
+                  aria-live="polite"
+                  className="absolute right-0 bottom-full z-40 mb-3 w-64 rounded-xl border border-[#e8cf86]/65 bg-[#12100c]/95 p-3.5 text-xs text-stone-200 shadow-[0_14px_40px_rgba(0,0,0,0.85)] backdrop-blur-md sm:w-72"
+                >
+                  <p className="leading-relaxed text-stone-100">
+                    <span className="font-semibold text-[#f3e1a9]">Lights are off</span> for the
+                    cinema experience. Click{' '}
+                    <span className="font-semibold text-white">Lights On</span> to view the seats
+                    and hall clearly.
+                  </p>
+                  <label className="mt-2.5 flex cursor-pointer items-center gap-2 border-t border-white/10 pt-2 text-[11px] text-stone-300">
+                    <input
+                      type="checkbox"
+                      checked={dontShowAgainChecked}
+                      onChange={(e) => handleDontShowAgainChange(e.target.checked)}
+                      className="h-3.5 w-3.5 rounded accent-[#d4af37]"
+                    />
+                    <span>Don&apos;t show this again</span>
+                  </label>
+                  {/* Downward pointer arrow aimed at the Lights On button */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute right-7 -bottom-1.5 h-3 w-3 rotate-45 border-r border-b border-[#e8cf86]/65 bg-[#12100c]"
+                  />
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={handleLightsButtonClick}
+                className={`relative inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
+                  isLightsFocusActive
+                    ? 'bg-gradient-to-r from-[#e8cf86] to-[#c9a349] text-[#050507] ring-2 ring-[#f3e1a9] ring-offset-2 ring-offset-[#0d0d11] shadow-[0_0_24px_rgba(232,207,134,0.65)]'
+                    : !houseLightsOn
+                      ? 'bg-[#d4af37]/20 text-[#f3e1a9] ring-1 ring-[#d4af37]/50 hover:bg-[#d4af37]/30'
+                      : 'bg-white/[0.06] text-stone-200 hover:bg-white/12'
+                }`}
+              >
+                {houseLightsOn ? (
+                  <Moon className="h-3.5 w-3.5" />
+                ) : (
+                  <Lightbulb className="h-3.5 w-3.5" />
+                )}
+                <span>{houseLightsOn ? 'Lights Off' : 'Lights On'}</span>
+                {isLightsFocusActive && (
+                  <span
+                    aria-hidden="true"
+                    className="ml-0.5 inline-block h-2 w-2 animate-ping rounded-full bg-[#050507]"
+                  />
+                )}
               </button>
             </div>
           </div>

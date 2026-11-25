@@ -2,6 +2,17 @@
 
 All notable milestones, architectural updates, and verified changes to CineView 3D are recorded here.
 
+## [0.2.21] — 2026-11-25 — Authentic 16.7m × 8.8m (55ft × 29ft) P[XL] Screen Dimensions
+### Changed
+- Resized the cinema screen in [grand-lumina.ts](src/lib/auditorium/grand-lumina.ts) to authentic PVR P[XL] dimensions (`16.7m × 8.8m`, `55 ft × 29 ft`) inside a scaled `20.0m × 22.0m × 11.4m` auditorium with `5.4m` front row setback and elevated `11.4m` ceiling clearance.
+- Updated [ScreenSurface.tsx](src/components/viewer/ScreenSurface.tsx) `CanvasTexture` aspect ratio to `2048 × 1079` (`1.90:1`) and adjusted [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx) and [CameraController.tsx](src/components/viewer/CameraController.tsx) for the larger P[XL] hall scale.
+
+## [0.2.20] — 2026-11-25 — Default Cinema Dark Mode & Persistent Lights On Callout
+### Changed
+- Set `houseLightsOn: false` as the default in [useCineViewStore.ts](src/store/useCineViewStore.ts) so visitors enter in authentic dark cinema mode.
+- Removed the Quick Jump seat pills and `Look Behind` button from [CineViewExperience.tsx](src/components/CineViewExperience.tsx) for a cleaner stage control bar.
+- Added a persistent **Lights On** focus highlight and informational callout in [CineViewExperience.tsx](src/components/CineViewExperience.tsx) that remains visible on every site refresh until the user clicks **Lights On** or checks **Don't show this again** (`localStorage`).
+
 ## [0.2.19] — 2026-11-25 — Smooth Mobile Seat-Switching Transitions
 ### Fixed
 - Replaced exponential frame-delta lerp during seat switches in [CameraController.tsx](src/components/viewer/CameraController.tsx) with a fixed-duration (`0.55s`) quintic tween and clamped first-frame `dt` so mobile DOM/tap frames never cause camera jumps.

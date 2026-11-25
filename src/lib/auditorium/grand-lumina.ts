@@ -77,16 +77,16 @@ interface RowBlueprint {
 }
 
 const ROW_BLUEPRINTS: RowBlueprint[] = [
-  { label: 'A', zMeters: 4.2, floorYMeters: 0.0, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 2, centerCount: 8, rightCount: 2, defaultCategory: 'standard' },
-  { label: 'B', zMeters: 5.35, floorYMeters: 0.16, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'standard' },
-  { label: 'C', zMeters: 6.5, floorYMeters: 0.48, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'standard' },
-  { label: 'D', zMeters: 7.65, floorYMeters: 0.8, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'standard' },
-  { label: 'E', zMeters: 8.8, floorYMeters: 1.12, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
-  { label: 'F', zMeters: 9.95, floorYMeters: 1.44, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
-  { label: 'G', zMeters: 11.1, floorYMeters: 1.76, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
-  { label: 'H', zMeters: 12.25, floorYMeters: 2.08, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
-  { label: 'I', zMeters: 13.45, floorYMeters: 2.4, riserDepthMeters: 1.25, pitchMeters: 1.2, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
-  { label: 'J', zMeters: 14.8, floorYMeters: 2.74, riserDepthMeters: 1.45, pitchMeters: 1.35, leftCount: 3, centerCount: 6, rightCount: 3, defaultCategory: 'recliner' },
+  { label: 'A', zMeters: 5.4, floorYMeters: 0.0, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 2, centerCount: 8, rightCount: 2, defaultCategory: 'standard' },
+  { label: 'B', zMeters: 6.55, floorYMeters: 0.16, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'standard' },
+  { label: 'C', zMeters: 7.7, floorYMeters: 0.48, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'standard' },
+  { label: 'D', zMeters: 8.85, floorYMeters: 0.8, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'standard' },
+  { label: 'E', zMeters: 10.0, floorYMeters: 1.12, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
+  { label: 'F', zMeters: 11.15, floorYMeters: 1.44, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
+  { label: 'G', zMeters: 12.3, floorYMeters: 1.76, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
+  { label: 'H', zMeters: 13.45, floorYMeters: 2.08, riserDepthMeters: 1.15, pitchMeters: 1.15, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
+  { label: 'I', zMeters: 14.65, floorYMeters: 2.4, riserDepthMeters: 1.25, pitchMeters: 1.2, leftCount: 3, centerCount: 8, rightCount: 3, defaultCategory: 'premium' },
+  { label: 'J', zMeters: 16.0, floorYMeters: 2.74, riserDepthMeters: 1.45, pitchMeters: 1.35, leftCount: 3, centerCount: 6, rightCount: 3, defaultCategory: 'recliner' },
 ];
 
 // Deterministic sample occupancy so users immediately see varied availability states.
@@ -107,7 +107,7 @@ function getDemoAvailability(code: string): SeatAvailabilityStatus {
  */
 export function buildGrandLuminaScreen1(): AuditoriumLayoutConfig {
   const screenCenterZ = 0.35;
-  const screenCenterY = 4.05;
+  const screenCenterY = 5.85;
   const aisleOffset = 2.95;
 
   const rows: RowStepSpec[] = [];
@@ -203,14 +203,14 @@ export function buildGrandLuminaScreen1(): AuditoriumLayoutConfig {
       id: 'obs-front-safety-rail-left',
       label: 'Front Row Left Safety Rail',
       kind: 'railing',
-      center: { x: -4.18, y: 0.42, z: 3.55 },
+      center: { x: -4.18, y: 0.42, z: 4.75 },
       size: { x: 1.35, y: 0.84, z: 0.06 },
     },
     {
       id: 'obs-front-safety-rail-right',
       label: 'Front Row Right Safety Rail',
       kind: 'railing',
-      center: { x: 4.18, y: 0.42, z: 3.55 },
+      center: { x: 4.18, y: 0.42, z: 4.75 },
       size: { x: 1.35, y: 0.84, z: 0.06 },
     },
   ];
@@ -222,19 +222,19 @@ export function buildGrandLuminaScreen1(): AuditoriumLayoutConfig {
     version: 1,
     calibrationStatus: 'SIMULATED',
     calibrationNotes:
-      'Simulated reference auditorium inspired by flagship Lulu Mall PVR LUXE & P[XL] theatres (136 seats, 16.0m x 20.0m, 11.2m x 4.70m wide-format screen). Dimensions are simulated estimates, not laser-measured venue drawings.',
+      'Simulated reference auditorium modeled with an authentic P[XL] 55 ft × 29 ft (16.7m × 8.8m) screen inside a 20.0m × 22.0m × 11.4m hall (136 seats). Seating coordinates are simulated estimates, not laser-measured venue drawings.',
     dimensions: {
-      widthMeters: 16.0,
-      lengthMeters: 20.0,
-      frontHeightMeters: 8.5,
-      rearHeightMeters: 8.5,
+      widthMeters: 20.0,
+      lengthMeters: 22.0,
+      frontHeightMeters: 11.4,
+      rearHeightMeters: 11.4,
     },
     screen: {
-      widthMeters: 11.2,
-      heightMeters: 4.7,
+      widthMeters: 16.7,
+      heightMeters: 8.8,
       center: { x: 0, y: screenCenterY, z: screenCenterZ },
       tiltDeg: 0,
-      frameThicknessMeters: 0.22,
+      frameThicknessMeters: 0.24,
     },
     aisles: [
       { id: 'aisle-left', centerXMeters: -aisleOffset, widthMeters: 1.15, hasHandrail: true },

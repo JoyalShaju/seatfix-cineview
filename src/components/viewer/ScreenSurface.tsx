@@ -57,7 +57,7 @@ function drawCalibrationGrid(
   ctx.font = 'bold 46px monospace';
   ctx.textAlign = 'center';
   ctx.fillText(
-    `SEATFIX • ${screen.widthMeters.toFixed(2)}m × ${screen.heightMeters.toFixed(2)}m (2.39:1)`,
+    `SEATFIX P[XL] • ${screen.widthMeters.toFixed(1)}m × ${screen.heightMeters.toFixed(1)}m (55ft × 29ft)`,
     cx,
     cy - height * 0.38,
   );
@@ -119,7 +119,7 @@ export function ScreenSurface({
   useEffect(() => {
     const c = document.createElement('canvas');
     c.width = 2048;
-    c.height = 858;
+    c.height = 1079;
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.minFilter = THREE.LinearMipmapLinearFilter;

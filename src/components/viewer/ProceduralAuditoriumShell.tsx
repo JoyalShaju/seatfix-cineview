@@ -16,9 +16,9 @@ export function ProceduralAuditoriumShell({
 }) {
   const { widthMeters: W, lengthMeters: L, frontHeightMeters: H } = layout.dimensions;
 
-  const sideRibZs = useMemo(() => [2.2, 4.4, 6.6, 8.8, 11.0, 13.2, 15.4, 17.6], []);
-  const surroundSpeakerZs = useMemo(() => [6.2, 9.8, 13.4, 16.8], []);
-  const ceilingBaffleZs = useMemo(() => [2.4, 5.2, 8.0, 10.8, 13.6, 16.4], []);
+  const sideRibZs = useMemo(() => [2.4, 4.9, 7.4, 9.9, 12.4, 14.9, 17.4, 19.8], []);
+  const surroundSpeakerZs = useMemo(() => [7.2, 10.8, 14.4, 18.0], []);
+  const ceilingBaffleZs = useMemo(() => [2.6, 5.6, 8.6, 11.6, 14.6, 17.6, 20.4], []);
 
   const lastRow = layout.rows[layout.rows.length - 1]!;
   const rearWalkwayY = lastRow.floorYMeters;
@@ -75,11 +75,11 @@ export function ProceduralAuditoriumShell({
       </mesh>
       {[-1, 1].map((side) => (
         <React.Fragment key={`screen-wing-${side}`}>
-          <mesh position={[side * (layout.screen.widthMeters / 2 + 1.1), H / 2, 0.55]}>
-            <boxGeometry args={[1.4, H, 0.45]} />
+          <mesh position={[side * (layout.screen.widthMeters / 2 + 1.05), H / 2, 0.55]}>
+            <boxGeometry args={[1.1, H, 0.45]} />
             <meshStandardMaterial color="#0a090c" roughness={0.85} />
           </mesh>
-          <mesh position={[side * (layout.screen.widthMeters / 2 + 0.42), H / 2, 0.78]}>
+          <mesh position={[side * (layout.screen.widthMeters / 2 + 0.46), H / 2, 0.78]}>
             <boxGeometry args={[0.035, H - 0.8, 0.035]} />
             <meshStandardMaterial
               color="#e8cf86"
@@ -176,7 +176,7 @@ export function ProceduralAuditoriumShell({
       {/* Rear Laser Projection Booth + 3D Projector + Rear Surround Speakers */}
       <ProjectionBooth
         layout={layout}
-        boothY={Math.min(H - 1.35, rearWalkwayY + 2.35)}
+        boothY={Math.min(H - 1.6, rearWalkwayY + 3.8)}
       />
       {[-3.6, 3.6].map((sx) => (
         <mesh key={`rear-spk-${sx}`} position={[sx, rearWalkwayY + 2.3, L - 0.12]}>
@@ -208,8 +208,8 @@ export function ProceduralAuditoriumShell({
       ))}
 
       {/* Illuminated P[XL] Architectural Wall Logos on Left and Right Walls */}
-      <WallPxlLogo position={[-W / 2 + 0.06, 4.35, 7.7]} rotationY={Math.PI / 2} />
-      <WallPxlLogo position={[W / 2 - 0.06, 4.35, 7.7]} rotationY={-Math.PI / 2} />
+      <WallPxlLogo position={[-W / 2 + 0.06, 5.2, 8.65]} rotationY={Math.PI / 2} />
+      <WallPxlLogo position={[W / 2 - 0.06, 5.2, 8.65]} rotationY={-Math.PI / 2} />
 
       {/* Ribbed Acoustic Wall Panels & Warm Sconces */}
       {sideRibZs.map((zPos) => (

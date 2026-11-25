@@ -7,12 +7,12 @@ import * as THREE from 'three';
 import { clampHeadLookOffsets, computeSeatCameraPose } from '@/lib/geometry/seat-camera';
 import { findSeatById, useCineViewStore } from '@/store/useCineViewStore';
 
-const OVERVIEW_POSITION = new THREE.Vector3(0, 7.2, 18.0);
-const OVERVIEW_TARGET = new THREE.Vector3(0, 2.4, 5.2);
+const OVERVIEW_POSITION = new THREE.Vector3(0, 8.8, 20.6);
+const OVERVIEW_TARGET = new THREE.Vector3(0, 3.6, 5.8);
 
 // Elevated upper-left rear auditorium corner for the dramatic entrance swoop
-const ENTRY_CORNER_POSITION = new THREE.Vector3(-5.6, 7.0, 17.4);
-const ENTRY_LOOK_TARGET = new THREE.Vector3(0.4, 3.2, 3.8);
+const ENTRY_CORNER_POSITION = new THREE.Vector3(-7.4, 8.8, 19.8);
+const ENTRY_LOOK_TARGET = new THREE.Vector3(0.4, 4.4, 4.2);
 
 export function CameraController() {
   const { gl } = useThree();
