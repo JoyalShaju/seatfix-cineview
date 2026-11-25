@@ -114,18 +114,18 @@ function createSculptedArmrestGeometry(): THREE.ExtrudeGeometry {
 }
 
 export function InstancedSeats() {
-  const {
-    layout,
-    activePreviewSeatId,
-    hoveredSeatId,
-    selectedSeatIds,
-    visualizationMode,
-    audienceSimulationEnabled,
-    assumedAudienceHeightMeters,
-    setActivePreviewSeat,
-    setHoveredSeat,
-    toggleSeatSelection,
-  } = useCineViewStore();
+  const layout = useCineViewStore((s) => s.layout);
+  const activePreviewSeatId = useCineViewStore((s) => s.activePreviewSeatId);
+  const hoveredSeatId = useCineViewStore((s) => s.hoveredSeatId);
+  const selectedSeatIds = useCineViewStore((s) => s.selectedSeatIds);
+  const visualizationMode = useCineViewStore((s) => s.visualizationMode);
+  const audienceSimulationEnabled = useCineViewStore((s) => s.audienceSimulationEnabled);
+  const assumedAudienceHeightMeters = useCineViewStore((s) => s.assumedAudienceHeightMeters);
+  const setActivePreviewSeat = useCineViewStore((s) => s.setActivePreviewSeat);
+  const setHoveredSeat = useCineViewStore((s) => s.setHoveredSeat);
+  const toggleSeatSelection = useCineViewStore((s) => s.toggleSeatSelection);
+
+  const prevHiddenIndexRef = useRef<number | null>(null);
 
   const cushionRef = useRef<THREE.InstancedMesh>(null);
   const backRef = useRef<THREE.InstancedMesh>(null);
@@ -328,7 +328,7 @@ export function InstancedSeats() {
     });
   }, [layout, reclinerSeats]);
 
-  // Backrest, side bolsters, winged headrest, and rear brass shoulder trim
+  // Initialize all seat backrests, bolsters, headrests, and trim once per layout
   useEffect(() => {
     if (
       !backRef.current ||
@@ -345,45 +345,37 @@ export function InstancedSeats() {
       const scaleW = cat.widthMeters / 0.54;
       const scaleD = cat.depthMeters / 0.62;
       const { x, y, z } = seat.floorPosition;
-      const isHiddenOwnSeat =
-        visualizationMode === 'first-person' && seat.id === activePreviewSeatId;
 
       const reclineTilt = seat.categoryId === 'recliner' ? 0.22 : 0.13;
       const backLocalZ = 0.21 * scaleD;
       const backCenterY = y + cat.cushionHeightMeters + 0.27;
 
-      // Main lumbar backrest
       dummy.position.set(
         x + backLocalZ * Math.sin(seat.yawRad),
         backCenterY,
         z + backLocalZ * Math.cos(seat.yawRad),
       );
       dummy.rotation.set(reclineTilt, seat.yawRad, 0);
-      if (isHiddenOwnSeat) {
-        dummy.scale.set(0, 0, 0);
-      } else {
-        dummy.scale.set(scaleW, cat.backHeightMeters / 1.02, 1);
-      }
+      dummy.scale.set(scaleW, cat.backHeightMeters / 1.02, 1);
       dummy.updateMatrix();
       backRef.current?.setMatrixAt(idx, dummy.matrix);
 
-      // Left & right angled leather side-support bolsters
       const bolsterOffsetX = 0.215 * scaleW;
       [-1, 1].forEach((side, sideIdx) => {
-        const bx = x + backLocalZ * Math.sin(seat.yawRad) + side * bolsterOffsetX * Math.cos(seat.yawRad);
-        const bz = z + backLocalZ * Math.cos(seat.yawRad) - side * bolsterOffsetX * Math.sin(seat.yawRad) - 0.02;
+        const bx =
+          x + backLocalZ * Math.sin(seat.yawRad) + side * bolsterOffsetX * Math.cos(seat.yawRad);
+        const bz =
+          z +
+          backLocalZ * Math.cos(seat.yawRad) -
+          side * bolsterOffsetX * Math.sin(seat.yawRad) -
+          0.02;
         dummy.position.set(bx, backCenterY - 0.02, bz);
         dummy.rotation.set(reclineTilt, seat.yawRad, side * -0.05);
-        if (isHiddenOwnSeat) {
-          dummy.scale.set(0, 0, 0);
-        } else {
-          dummy.scale.set(1, cat.backHeightMeters / 1.02, 1);
-        }
+        dummy.scale.set(1, cat.backHeightMeters / 1.02, 1);
         dummy.updateMatrix();
         bolsterRef.current?.setMatrixAt(idx * 2 + sideIdx, dummy.matrix);
       });
 
-      // Tailored curved headrest pillow
       const headLocalZ = backLocalZ + 0.05;
       dummy.position.set(
         x + headLocalZ * Math.sin(seat.yawRad),
@@ -391,15 +383,10 @@ export function InstancedSeats() {
         z + headLocalZ * Math.cos(seat.yawRad),
       );
       dummy.rotation.set(reclineTilt * 0.55, seat.yawRad, 0);
-      if (isHiddenOwnSeat) {
-        dummy.scale.set(0, 0, 0);
-      } else {
-        dummy.scale.set(scaleW, 1, 1);
-      }
+      dummy.scale.set(scaleW, 1, 1);
       dummy.updateMatrix();
       headrestRef.current?.setMatrixAt(idx, dummy.matrix);
 
-      // Brushed-brass shoulder inlay accent strip on seat back
       const trimLocalZ = backLocalZ + 0.075;
       dummy.position.set(
         x + trimLocalZ * Math.sin(seat.yawRad),
@@ -407,14 +394,110 @@ export function InstancedSeats() {
         z + trimLocalZ * Math.cos(seat.yawRad),
       );
       dummy.rotation.set(reclineTilt, seat.yawRad, 0);
-      if (isHiddenOwnSeat) {
-        dummy.scale.set(0, 0, 0);
-      } else {
-        dummy.scale.set(scaleW, 1, 1);
-      }
+      dummy.scale.set(scaleW, 1, 1);
       dummy.updateMatrix();
       trimRef.current?.setMatrixAt(idx, dummy.matrix);
     });
+
+    backRef.current.instanceMatrix.needsUpdate = true;
+    bolsterRef.current.instanceMatrix.needsUpdate = true;
+    headrestRef.current.instanceMatrix.needsUpdate = true;
+    trimRef.current.instanceMatrix.needsUpdate = true;
+    prevHiddenIndexRef.current = null;
+  }, [layout]);
+
+  // Patch ONLY the previously hidden seat and newly active seat (2 seats instead of 136)
+  useEffect(() => {
+    if (
+      !backRef.current ||
+      !bolsterRef.current ||
+      !headrestRef.current ||
+      !trimRef.current
+    ) {
+      return;
+    }
+
+    const dummy = new THREE.Object3D();
+    const updateSeatUpperVisibility = (idx: number, hidden: boolean) => {
+      const seat = layout.seats[idx];
+      if (!seat) return;
+      const cat = layout.categories[seat.categoryId];
+      const scaleW = cat.widthMeters / 0.54;
+      const scaleD = cat.depthMeters / 0.62;
+      const { x, y, z } = seat.floorPosition;
+      const reclineTilt = seat.categoryId === 'recliner' ? 0.22 : 0.13;
+      const backLocalZ = 0.21 * scaleD;
+      const backCenterY = y + cat.cushionHeightMeters + 0.27;
+
+      dummy.position.set(
+        x + backLocalZ * Math.sin(seat.yawRad),
+        backCenterY,
+        z + backLocalZ * Math.cos(seat.yawRad),
+      );
+      dummy.rotation.set(reclineTilt, seat.yawRad, 0);
+      dummy.scale.set(
+        hidden ? 0 : scaleW,
+        hidden ? 0 : cat.backHeightMeters / 1.02,
+        hidden ? 0 : 1,
+      );
+      dummy.updateMatrix();
+      backRef.current?.setMatrixAt(idx, dummy.matrix);
+
+      const bolsterOffsetX = 0.215 * scaleW;
+      [-1, 1].forEach((side, sideIdx) => {
+        const bx =
+          x + backLocalZ * Math.sin(seat.yawRad) + side * bolsterOffsetX * Math.cos(seat.yawRad);
+        const bz =
+          z +
+          backLocalZ * Math.cos(seat.yawRad) -
+          side * bolsterOffsetX * Math.sin(seat.yawRad) -
+          0.02;
+        dummy.position.set(bx, backCenterY - 0.02, bz);
+        dummy.rotation.set(reclineTilt, seat.yawRad, side * -0.05);
+        dummy.scale.set(
+          hidden ? 0 : 1,
+          hidden ? 0 : cat.backHeightMeters / 1.02,
+          hidden ? 0 : 1,
+        );
+        dummy.updateMatrix();
+        bolsterRef.current?.setMatrixAt(idx * 2 + sideIdx, dummy.matrix);
+      });
+
+      const headLocalZ = backLocalZ + 0.05;
+      dummy.position.set(
+        x + headLocalZ * Math.sin(seat.yawRad),
+        y + cat.cushionHeightMeters + 0.56 * (cat.backHeightMeters / 1.02),
+        z + headLocalZ * Math.cos(seat.yawRad),
+      );
+      dummy.rotation.set(reclineTilt * 0.55, seat.yawRad, 0);
+      dummy.scale.set(hidden ? 0 : scaleW, hidden ? 0 : 1, hidden ? 0 : 1);
+      dummy.updateMatrix();
+      headrestRef.current?.setMatrixAt(idx, dummy.matrix);
+
+      const trimLocalZ = backLocalZ + 0.075;
+      dummy.position.set(
+        x + trimLocalZ * Math.sin(seat.yawRad),
+        y + cat.cushionHeightMeters + 0.44 * (cat.backHeightMeters / 1.02),
+        z + trimLocalZ * Math.cos(seat.yawRad),
+      );
+      dummy.rotation.set(reclineTilt, seat.yawRad, 0);
+      dummy.scale.set(hidden ? 0 : scaleW, hidden ? 0 : 1, hidden ? 0 : 1);
+      dummy.updateMatrix();
+      trimRef.current?.setMatrixAt(idx, dummy.matrix);
+    };
+
+    if (prevHiddenIndexRef.current !== null) {
+      updateSeatUpperVisibility(prevHiddenIndexRef.current, false);
+      prevHiddenIndexRef.current = null;
+    }
+
+    if (visualizationMode === 'first-person') {
+      const nextIdx = layout.seats.findIndex((s) => s.id === activePreviewSeatId);
+      if (nextIdx >= 0) {
+        updateSeatUpperVisibility(nextIdx, true);
+        prevHiddenIndexRef.current = nextIdx;
+      }
+    }
 
     backRef.current.instanceMatrix.needsUpdate = true;
     bolsterRef.current.instanceMatrix.needsUpdate = true;

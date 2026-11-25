@@ -2,6 +2,11 @@
 
 All notable milestones, architectural updates, and verified changes to CineView 3D are recorded here.
 
+## [0.2.19] — 2026-11-25 — Smooth Mobile Seat-Switching Transitions
+### Fixed
+- Replaced exponential frame-delta lerp during seat switches in [CameraController.tsx](src/components/viewer/CameraController.tsx) with a fixed-duration (`0.55s`) quintic tween and clamped first-frame `dt` so mobile DOM/tap frames never cause camera jumps.
+- Optimized [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx) to patch only the 2 seats whose backrest visibility changed (instead of recomputing all 136 seats) and switched to granular Zustand selectors.
+
 ## [0.2.18] — 2026-11-25 — True Cool-Neutral Ash Lighting & Velvet Sheen
 ### Fixed
 - Replaced yellow/cream auditorium light colors and cream `sheenColor` in [ProceduralAuditoriumShell.tsx](src/components/viewer/ProceduralAuditoriumShell.tsx), [ScreenSurface.tsx](src/components/viewer/ScreenSurface.tsx), [seatTextures.ts](src/components/viewer/seatTextures.ts), and [InstancedSeats.tsx](src/components/viewer/InstancedSeats.tsx) with neutral architectural white lights (`#f3f5f8` / `#f8fafc`) and cool-silver sheen (`#cbd5e1`) so ash-grey seats render as true ash grey without a cream cast.

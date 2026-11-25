@@ -49,6 +49,18 @@ export function CameraController() {
   const flyQuatRef = useRef(new THREE.Quaternion());
   const lastSeatIdRef = useRef(activePreviewSeatId);
 
+  // Smooth fixed-duration seat-to-seat transition state (eliminates mobile lerp delta spikes)
+  const seatTweenRef = useRef({
+    active: false,
+    progress: 1,
+    startPos: new THREE.Vector3(),
+    startQuat: new THREE.Quaternion(),
+    curPos: new THREE.Vector3(),
+    curQuat: new THREE.Quaternion(),
+    trackedSeatId: activePreviewSeatId,
+    trackedLookCenter: lookAtScreenCenter,
+  });
+
   // Flag overview camera reset when entering 3d-overview or resetting view
   useEffect(() => {
     if (visualizationMode === '3d-overview') {
@@ -207,11 +219,47 @@ export function CameraController() {
     if (!hasInitializedRef.current || reducedMotion) {
       activeCamera.position.copy(targetPosRef.current);
       activeCamera.quaternion.copy(targetQuatRef.current);
+      seatTweenRef.current.active = false;
+      seatTweenRef.current.trackedSeatId = activePreviewSeatId;
+      seatTweenRef.current.trackedLookCenter = lookAtScreenCenter;
       hasInitializedRef.current = true;
       return;
     }
 
-    const alpha = 1 - Math.exp(-8.5 * Math.min(delta, 0.05));
+    const tween = seatTweenRef.current;
+    if (
+      tween.trackedSeatId !== activePreviewSeatId ||
+      tween.trackedLookCenter !== lookAtScreenCenter
+    ) {
+      tween.trackedSeatId = activePreviewSeatId;
+      tween.trackedLookCenter = lookAtScreenCenter;
+      tween.startPos.copy(activeCamera.position);
+      tween.startQuat.copy(activeCamera.quaternion);
+      tween.progress = 0;
+      tween.active = true;
+    }
+
+    if (tween.active) {
+      // Cap frame delta on the first frame after tap so React/DOM work never causes a jump
+      const safeDt = tween.progress === 0 ? Math.min(delta, 0.016) : Math.min(delta, 0.033);
+      tween.progress = Math.min(1, tween.progress + safeDt / 0.55);
+      const t = tween.progress;
+      const ease = t * t * t * (t * (t * 6 - 15) + 10);
+
+      tween.curPos.lerpVectors(tween.startPos, targetPosRef.current, ease);
+      tween.curQuat.slerpQuaternions(tween.startQuat, targetQuatRef.current, ease);
+
+      activeCamera.position.copy(tween.curPos);
+      activeCamera.quaternion.copy(tween.curQuat);
+
+      if (t >= 1) {
+        tween.active = false;
+      }
+      return;
+    }
+
+    // Smooth responsive damping for interactive touch/mouse head-look
+    const alpha = 1 - Math.exp(-14 * Math.min(delta, 0.033));
     activeCamera.position.lerp(targetPosRef.current, alpha);
     activeCamera.quaternion.slerp(targetQuatRef.current, alpha);
   });
